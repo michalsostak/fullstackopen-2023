@@ -38,7 +38,6 @@ const CountryDetails = ({ filteredCountry }) => {
             <div>temperature {weatherDetails?.main.temp} Celcius</div>
             <img src={`https://openweathermap.org/img/wn/${weatherDetails?.weather[0].icon}@2x.png`} alt="weather icon" />
             <div>wind {weatherDetails?.wind.speed} m/s</div>
-
         </>
     )
 }
