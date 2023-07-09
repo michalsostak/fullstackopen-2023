@@ -24,7 +24,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
-morgan.token('body', (req, res) => JSON.stringify(req.body));
+morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 app.get('/api/persons', (request, response) => {
@@ -48,14 +48,14 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.get('/info', (request, response, next) => {
   Person.find({})
     .then(persons => {
-      response.send(`Phonebook has info for ${persons.length} ${persons.length > 1 ? "people" : "person"}<br/><br/>${Date()}`)
+      response.send(`Phonebook has info for ${persons.length} ${persons.length > 1 ? 'people' : 'person'}<br/><br/>${Date()}`)
     })
     .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -83,7 +83,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     request.params.id,
     { name, number },
     { new: true, runValidators: true, context: 'query' }
-    )
+  )
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
