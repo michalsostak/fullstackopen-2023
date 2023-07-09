@@ -50,17 +50,12 @@ const App = () => {
         })
         .catch(error => {
           setNotificationType("error")
-          setNotificationMessage(`Information of ${updatedPerson.name} has already been removed from server`)
+          setNotificationMessage(error.response.data.error)
           setTimeout(() => {
             setNotificationMessage(null)
           }, 5000)
-          setPersons(persons.filter(p => p.id !== existingPerson.id))
+          // setPersons(persons.filter(p => p.id !== existingPerson.id))
         })
-      return
-    }
-
-    if (newName === '') {
-      alert("Cannot add an empty name")
       return
     }
 
@@ -81,13 +76,17 @@ const App = () => {
           setNotificationMessage(null)
         }, 5000)
       })
+      .catch(error => {
+        setNotificationType("error")
+        setNotificationMessage(error.response.data.error)
+      })
   }
 
-  const handleRemove = (e, id) => {
+  const handleRemove = (event, id) => {
     if (window.confirm("Do you really want to remove this contact?")) {
       personsService
         .remove(id)
-        .then(returnedPerson => {
+        .then(() => {
           setPersons(persons.filter(p => p.id !== id))
         })
     }
