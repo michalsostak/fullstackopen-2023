@@ -6,10 +6,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../frontend && npm run build && cp -r build ../backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "jest --verbose"
+
   },
   "author": "Michal Sostak",
   "license": "MIT",
@@ -22,6 +23,10 @@
   "devDependencies": {
     "@flydotio/dockerfile": "^0.2.16",
     "eslint": "^8.44.0",
+    "jest": "^29.6.1",
     "nodemon": "^2.0.22"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
