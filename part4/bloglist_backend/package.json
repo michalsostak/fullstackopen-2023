@@ -1,0 +1,28 @@
+{
+  "name": "bloglist_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest --verbose",
+    "lint": "eslint ."
+  },
+  "author": "Michal Sostak",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.44.0",
+    "express": "^4.18.2",
+    "mongoose": "^7.3.2"
+  },
+  "devDependencies": {
+    "jest": "^29.6.1",
+    "nodemon": "^2.0.22"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
