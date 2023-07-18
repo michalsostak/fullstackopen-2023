@@ -1,4 +1,7 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const initialBlogs = [
   {
@@ -58,6 +61,18 @@ const newBlog = {
   likes: 4
 }
 
+const newUser = {
+  username: 'testUser',
+  name: 'Jon Doe',
+  password: 'testPassword'
+}
+
+const secondaryUser = {
+  username: 'secondUser',
+  name: 'Jane Doe',
+  password: 'testPasswordSecond'
+}
+
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'willremovethissoon' })
   await blog.save()
@@ -71,6 +86,58 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(user => user.toJSON())
+}
+
+const createUser = async (userDetails) => {
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash(userDetails.password, saltRounds)
+
+  const user = new User({
+    username: userDetails.username,
+    name: userDetails.name,
+    passwordHash: passwordHash,
+  })
+
+  return await user.save()
+}
+
+const getUserToken = async (userDetails) => {
+  const user = await User.findOne({
+    username: userDetails.username
+  })
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
+
+  const token = jwt.sign(
+    userForToken,
+    process.env.SECRET,
+    { expiresIn: 60*60 }
+  )
+
+  return token
+}
+
+const insertBlogsWithUser = async (userDetails) => {
+  await createUser(userDetails)
+
+  const userForBlogs = await User.findOne({ username: userDetails.username })
+  await Promise.all(initialBlogs.map(async (blog) => {
+    const blogWihUser = new Blog({ ...blog, user: userForBlogs._id })
+    const savedBlog = await blogWihUser.save()
+    userForBlogs.blogs = userForBlogs.blogs.concat(savedBlog._id)
+  })
+  )
+
+  return await userForBlogs.save()
+}
+
+
+
 module.exports = {
-  initialBlogs, blogsInDb, newBlog, nonExistingId
+  initialBlogs, blogsInDb, newBlog, nonExistingId, usersInDb, newUser, createUser, getUserToken, insertBlogsWithUser, secondaryUser
 }

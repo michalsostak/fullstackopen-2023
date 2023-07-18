@@ -5,10 +5,15 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+let token
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  await User.deleteMany({})
+  await helper.insertBlogsWithUser(helper.newUser)
+  token = await helper.getUserToken(helper.newUser)
 })
 
 describe('get testing when there are initially some blogs saved', () => {
@@ -40,6 +45,7 @@ describe('post request adding a new blog', () => {
   test('succeeds with valid data', async () => {
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(helper.newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -56,6 +62,7 @@ describe('post request adding a new blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogWithoutLikes)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -71,6 +78,7 @@ describe('post request adding a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogWithoutTitle)
       .expect(400)
 
@@ -84,6 +92,7 @@ describe('post request adding a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogWithoutUrl)
       .expect(400)
 
@@ -97,6 +106,7 @@ describe('post request adding a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogWithoutTitleAndUrl)
       .expect(400)
 
@@ -113,6 +123,7 @@ describe('deletion of a blog', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -126,15 +137,56 @@ describe('deletion of a blog', () => {
     expect(titles).not.toContain(blogToDelete.title)
   })
 
-  test('fails with status code 400 if id is invalid', async () => {
+  test('fails with status code 403 if id is of correct format but does not exist', async () => {
     await api
       .delete(`/api/blogs/${helper.nonExistingId}`)
-      .expect(400)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403)
 
     const blogsAtEnd = await helper.blogsInDb()
 
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
   })
+
+  test('fails with status code 403 if id is of correct format but does not match the user-creator id', async () => {
+    const otherUser = await helper.createUser(helper.secondaryUser)
+
+    await api
+      .delete(`/api/blogs/${otherUser.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
+})
+
+test('fails with status code 403 if token can be decoded but does not match with the user-creator', async () => {
+  const otherUser = await helper.createUser(helper.secondaryUser)
+  const secondToken = await helper.getUserToken(helper.secondaryUser)
+
+  await api
+    .delete(`/api/blogs/${otherUser.id}`)
+    .set('Authorization', `Bearer ${secondToken}`)
+    .expect(403)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('fails with status code 401 if token is not provided', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(401)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
 describe('update of a blog', () => {
@@ -150,11 +202,11 @@ describe('update of a blog', () => {
 
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 
-    const { id, ...updatedBlog } = blogsAtEnd[0]
+    const { id, user, ...updatedBlog } = blogsAtEnd[0]
     expect(updatedBlog).toEqual(helper.newBlog)
   })
 
-  test('fails with status code 400 if id is invalid', async () => {
+  test('fails with status code 400 if id is of correct format but does not exist', async () => {
     await api
       .put(`/api/blogs/${helper.nonExistingId}`)
       .send(helper.newBlog)
