@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
 
-const CreateBlog = ({ blogs, setBlogs, setNotificationMessage, setNotificationType }) => {
+const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -13,30 +12,11 @@ const CreateBlog = ({ blogs, setBlogs, setNotificationMessage, setNotificationTy
       author: author,
       url: url
     }
+    createBlog(newBlog)
 
-    blogService
-      .create(newBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
-        setNotificationType('success')
-        setNotificationMessage(`a new blog ${title} by ${title} added`)
-        setTimeout(() => {
-          setNotificationMessage(null)
-          setNotificationType('')
-        }, 5000)
-      })
-      .catch(e => {
-        setNotificationType('error')
-        setNotificationMessage(e.response.data.error)
-        setTimeout(() => {
-          setNotificationMessage(null)
-          setNotificationType('')
-        }, 5000)
-      }
-      )
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return (
@@ -76,4 +56,4 @@ const CreateBlog = ({ blogs, setBlogs, setNotificationMessage, setNotificationTy
   )
 }
 
-export default CreateBlog
+export default BlogForm

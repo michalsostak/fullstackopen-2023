@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import LoggedIn from './components/LoggedIn'
 import Notification from './components/Notification'
-import CreateBlog from './components/CreateBlog'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -55,6 +56,77 @@ const App = () => {
     }
   }
 
+  const noteFormRef = useRef()
+
+  const addBlog = (newBlog) => {
+    blogService
+      .create(newBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setNotificationType('success')
+        setNotificationMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+        noteFormRef.current.toggleVisibility()
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType('')
+        }, 5000)
+      })
+      .catch(e => {
+        setNotificationType('error')
+        setNotificationMessage(e.response.data.error)
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType('')
+        }, 5000)
+      })
+  }
+
+  const addLike = (blogId, updatedBlog) => {
+    blogService
+      .update(blogId, updatedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
+        setNotificationType('success')
+        setNotificationMessage(`like for blog ${returnedBlog.title} are now: ${returnedBlog.likes}`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType('')
+        }, 5000)
+      })
+      .catch(e => {
+        setNotificationType('error')
+        setNotificationMessage(e.response.data.error)
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType('')
+        }, 5000)
+      })
+  }
+
+  const deleteBlog = (blogId) => {
+    blogService
+      .remove(blogId)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== blogId))
+        setNotificationType('success')
+        setNotificationMessage(`removed blog with id ${blogId}`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType('')
+        }, 5000)
+      })
+      .catch(e => {
+        setNotificationType('error')
+        setNotificationMessage(e.response.data.error)
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType('')
+        }, 5000)
+      })
+
+  }
+
+
   if (user === null) {
     return (
       <div>
@@ -69,8 +141,10 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={notificationMessage} notificationType={notificationType} />
       <LoggedIn user={user} setUser={setUser} />
-      <CreateBlog blogs={blogs} setBlogs={setBlogs} setNotificationMessage={setNotificationMessage} setNotificationType={setNotificationType} />
-      <BlogList blogs={blogs} />
+      <Togglable buttonLabel="create new blog" ref={noteFormRef}>
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+      <BlogList blogs={blogs} increaseLikes={addLike} user={user} deleteBlog={deleteBlog} />
     </div>
   )
 }
