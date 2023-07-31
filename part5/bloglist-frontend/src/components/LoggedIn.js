@@ -1,16 +1,8 @@
-import blogService from '../services/blogs'
-
-function handleLogout(setUser) {
-  window.localStorage.removeItem('loggedBlogAppUser')
-  blogService.setToken(null)
-  setUser(null)
-}
-
-const LoggedIn = ({ user, setUser }) => (
+const LoggedIn = ({ user, handleLogout }) => (
   <>
     <p>
       {user.name} logged in
-      <button onClick={() => handleLogout(setUser)}>logout</button>
+      <button onClick={handleLogout}>logout</button>
     </p>
   </>
 )
