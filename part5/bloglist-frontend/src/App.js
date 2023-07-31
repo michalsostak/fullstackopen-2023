@@ -16,18 +16,40 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [notificationType, setNotificationType] = useState(null)
 
+  const showNotification = (notificationMessage, notificationType, timeout) => {
+    setNotificationType(notificationMessage)
+    setNotificationMessage(notificationType)
+    setTimeout(() => {
+      setNotificationMessage(null)
+      setNotificationType('')
+    }, timeout)
+  }
+
+  const defaultTimeout = 3000
+
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    (async () => {
+      try {
+        const blogs = await blogService.getAll()
+        setBlogs(blogs)
+      } catch (exception) {
+        showNotification('error', exception.response.data.error, defaultTimeout)
+      }
+    })()
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+    async () => {
+      try {
+        const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+        if (loggedUserJSON) {
+          const user = JSON.parse(loggedUserJSON)
+          setUser(user)
+          blogService.setToken(user.token)
+        }
+      } catch (exception) {
+        showNotification('error', exception.response.data.error, defaultTimeout)
+      }
     }
   }, [])
 
@@ -47,85 +69,48 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setNotificationType('error')
-      setNotificationMessage(exception.response.data.error)
-      setTimeout(() => {
-        setNotificationMessage(null)
-        setNotificationType('')
-      }, 5000)
+      showNotification('error', exception.response.data.error, defaultTimeout)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogAppUser')
+    blogService.setToken(null)
+    setUser(null)
   }
 
   const noteFormRef = useRef()
 
-  const addBlog = (newBlog) => {
-    blogService
-      .create(newBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNotificationType('success')
-        setNotificationMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
-        noteFormRef.current.toggleVisibility()
-        setTimeout(() => {
-          setNotificationMessage(null)
-          setNotificationType('')
-        }, 5000)
-      })
-      .catch(e => {
-        setNotificationType('error')
-        setNotificationMessage(e.response.data.error)
-        setTimeout(() => {
-          setNotificationMessage(null)
-          setNotificationType('')
-        }, 5000)
-      })
+  const addBlog = async (newBlog) => {
+    try {
+      const returnedBlog = await blogService.create(newBlog)
+      setBlogs(blogs.concat(returnedBlog))
+      showNotification('success', `a new blog ${newBlog.title} by ${newBlog.author} added`, defaultTimeout)
+      noteFormRef.current.toggleVisibility()
+    } catch (exception) {
+      showNotification('error', exception.response.data.error, defaultTimeout)
+    }
   }
 
-  const addLike = (blogId, updatedBlog) => {
-    blogService
-      .update(blogId, updatedBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
-        setNotificationType('success')
-        setNotificationMessage(`like for blog ${returnedBlog.title} are now: ${returnedBlog.likes}`)
-        setTimeout(() => {
-          setNotificationMessage(null)
-          setNotificationType('')
-        }, 5000)
-      })
-      .catch(e => {
-        setNotificationType('error')
-        setNotificationMessage(e.response.data.error)
-        setTimeout(() => {
-          setNotificationMessage(null)
-          setNotificationType('')
-        }, 5000)
-      })
+  const addLike = async (blogId, updatedBlog) => {
+    const returnedBlog = await blogService.update(blogId, updatedBlog)
+    try {
+      setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
+      showNotification('success', `like for blog ${returnedBlog.title} are now: ${returnedBlog.likes}`, defaultTimeout)
+    } catch (exception) {
+      showNotification('error', exception.response.data.error, defaultTimeout)
+    }
   }
 
-  const deleteBlog = (blogId) => {
-    blogService
-      .remove(blogId)
-      .then(() => {
-        setBlogs(blogs.filter(blog => blog.id !== blogId))
-        setNotificationType('success')
-        setNotificationMessage(`removed blog with id ${blogId}`)
-        setTimeout(() => {
-          setNotificationMessage(null)
-          setNotificationType('')
-        }, 5000)
-      })
-      .catch(e => {
-        setNotificationType('error')
-        setNotificationMessage(e.response.data.error)
-        setTimeout(() => {
-          setNotificationMessage(null)
-          setNotificationType('')
-        }, 5000)
-      })
-
+  const deleteBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId)
+      setBlogs(blogs.filter(blog => blog.id !== blogId))
+      showNotification('success', `removed blog with id ${blogId}`, defaultTimeout)
+    } catch (exception) {
+      showNotification('error', exception.response.data.error, defaultTimeout)
+    }
   }
-
 
   if (user === null) {
     return (
@@ -140,7 +125,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <Notification message={notificationMessage} notificationType={notificationType} />
-      <LoggedIn user={user} setUser={setUser} />
+      <LoggedIn user={user} handleLogout={handleLogout} />
       <Togglable buttonLabel="create new blog" ref={noteFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
