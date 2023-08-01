@@ -77,6 +77,7 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     blogService.setToken(null)
     setUser(null)
+    setBlogs([])
   }
 
   const noteFormRef = useRef()
