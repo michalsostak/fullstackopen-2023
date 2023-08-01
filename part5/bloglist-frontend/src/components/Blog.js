@@ -27,23 +27,29 @@ const Blog = ({ blog, increaseLikes, user, deleteBlog }) => {
   }
 
   return (
-    <div className='blogStyle'>
-      {blog.title} {blog.author}
+    <div className='blog-style'>
+      <span className='blog-title'>
+        {blog.title}
+      </span>
+      &nbsp;
+      <span className='blog-author'>
+        {blog.author}
+      </span>
       <span style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>view</button>
+        <button className='blog-view' onClick={toggleVisibility}>view</button>
       </span>
       <span style={showWhenVisible}>
-        <button onClick={toggleVisibility}>hide</button>
+        <button className='blog-hide' onClick={toggleVisibility}>hide</button>
         <div>
-          {blog.url}
-          <br />
-          likes {blog.likes}
-          <button onClick={() => addLike(blog.id)}>like</button>
-          <br />
-          {blog.user.name}
+          <div className="blog-url">{blog.url}</div>
+          <div className="blog-likes">
+            {blog.likes}
+            <button className='blog-like' onClick={() => addLike(blog.id)}>like</button>
+          </div>
+          <div className="blog-username">{blog.user.name}</div>
         </div>
         {blog.user.username === user.username &&
-          <button onClick={handleRemove}>remove</button>
+          <button className='blog-remove' onClick={handleRemove}>remove</button>
         }
       </span>
     </div>
