@@ -39,7 +39,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    async () => {
+    (async () => {
       try {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
         if (loggedUserJSON) {
@@ -50,7 +50,7 @@ const App = () => {
       } catch (exception) {
         showNotification('error', exception.response.data.error, defaultTimeout)
       }
-    }
+    })()
   }, [])
 
   const handleLogin = async (event) => {

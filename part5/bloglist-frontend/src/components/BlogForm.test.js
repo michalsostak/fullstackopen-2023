@@ -22,15 +22,15 @@ describe('<BlogForm />', () => {
     const mockHandler = jest.fn()
     const container = render(<BlogForm createBlog={mockHandler} />).container
 
-    const inputTitle = container.querySelector('input[name="Title"]')
-    const inputAuthor = container.querySelector('input[name="Author"]')
-    const inputUrl = container.querySelector('input[name="Url"]')
+    const inputTitle = container.querySelector('input[name="input-blog-title"]')
+    const inputAuthor = container.querySelector('input[name="input-blog-author"]')
+    const inputUrl = container.querySelector('input[name="input-blog-url"]')
 
     await mockUser.type(inputTitle, testBlogData.title)
     await mockUser.type(inputAuthor, testBlogData.author)
     await mockUser.type(inputUrl, testBlogData.url)
 
-    const submitCreateButton = container.querySelector('input[name="Create"]')
+    const submitCreateButton = container.querySelector('input[name="input-blog-create"]')
     await mockUser.click(submitCreateButton)
 
     const { user, likes, ...result } = testBlogData
