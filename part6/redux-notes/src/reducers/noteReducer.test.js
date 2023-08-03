@@ -6,7 +6,7 @@ describe('noteReducer', () => {
     const state = []
     const action = {
       type: 'NEW_NOTE',
-      data: {
+      payload: {
         content: 'the app state is in redux store',
         important: true,
         id: 1
@@ -17,7 +17,7 @@ describe('noteReducer', () => {
     const newState = noteReducer(state, action)
 
     expect(newState).toHaveLength(1)
-    expect(newState).toContainEqual(action.data)
+    expect(newState).toContainEqual(action.payload)
   })
 
   test('returns new state with action TOGGLE_IMPORTANCE', () => {
@@ -35,7 +35,7 @@ describe('noteReducer', () => {
   
     const action = {
       type: 'TOGGLE_IMPORTANCE',
-      data: {
+      payload: {
         id: 2
       }
     }
