@@ -16,7 +16,7 @@ const Blog = ({ blog, increaseLikes, user, deleteBlog }) => {
       author: blog.author,
       url: blog.url,
       likes: blog.likes + 1,
-      user: blog.user.id,
+      user: blog.user.id
     }
 
     increaseLikes(blogId, updatedBlog)

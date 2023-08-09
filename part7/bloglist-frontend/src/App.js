@@ -59,7 +59,7 @@ const App = () => {
     try {
       const user = await loginService.login({
         username,
-        password,
+        password
       })
 
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
@@ -88,7 +88,7 @@ const App = () => {
       showNotification(
         'success',
         `a new blog ${newBlog.title} by ${newBlog.author} added`,
-        defaultTimeout,
+        defaultTimeout
       )
       noteFormRef.current.toggleVisibility()
     } catch (exception) {
@@ -103,7 +103,7 @@ const App = () => {
       showNotification(
         'success',
         `like for blog ${returnedBlog.title} are now: ${returnedBlog.likes}`,
-        defaultTimeout,
+        defaultTimeout
       )
     } catch (exception) {
       showNotification('error', exception.response.data.error, defaultTimeout)

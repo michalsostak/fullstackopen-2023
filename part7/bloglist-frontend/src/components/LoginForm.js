@@ -5,7 +5,7 @@ const LoginForm = ({
   username,
   password,
   setUsername,
-  setPassword,
+  setPassword
 }) => (
   <>
     <h2>log in to application</h2>
@@ -38,7 +38,7 @@ LoginForm.propTypes = {
   username: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
   setUsername: PropTypes.func.isRequired,
-  setPassword: PropTypes.func.isRequired,
+  setPassword: PropTypes.func.isRequired
 }
 
 export default LoginForm

@@ -11,8 +11,8 @@ const testBlogData = {
   likes: 2,
   user: {
     username: 'TestUsername',
-    name: 'TestName',
-  },
+    name: 'TestName'
+  }
 }
 
 describe('<Blog />', () => {
@@ -24,7 +24,7 @@ describe('<Blog />', () => {
     user = userEvent.setup()
     mockHandler = jest.fn()
     container = render(
-      <Blog blog={testBlogData} user={user} increaseLikes={mockHandler} />,
+      <Blog blog={testBlogData} user={user} increaseLikes={mockHandler} />
     ).container
   })
 

@@ -11,8 +11,8 @@ const testBlogData = {
   likes: 2,
   user: {
     username: 'TestUsername',
-    name: 'TestName',
-  },
+    name: 'TestName'
+  }
 }
 
 describe('<BlogForm />', () => {
@@ -30,7 +30,7 @@ describe('<BlogForm />', () => {
     await mockUser.type(inputUrl, testBlogData.url)
 
     const submitCreateButton = container.querySelector(
-      'input[name="input-blog-create"]',
+      'input[name="input-blog-create"]'
     )
     await mockUser.click(submitCreateButton)
 

@@ -4,7 +4,7 @@ describe('Blog app', function () {
     const user = {
       name: 'Admin Root',
       username: 'admin',
-      password: 'pass',
+      password: 'pass'
     }
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
     cy.visit('http://localhost:3000')
@@ -61,7 +61,7 @@ describe('Blog app', function () {
         cy.createBlog({
           title: 'command added blog',
           author: 'author test',
-          url: 'https://www.test.com',
+          url: 'https://www.test.com'
         })
       })
 
@@ -86,7 +86,7 @@ describe('Blog app', function () {
         const secondUser = {
           name: 'Other User',
           username: 'other',
-          password: 'user',
+          password: 'user'
         }
         cy.request('POST', `${Cypress.env('BACKEND')}/users`, secondUser)
 
@@ -106,17 +106,17 @@ describe('Blog app', function () {
         cy.createBlog({
           title: 'blog with the least amount of likes',
           author: 'author test1',
-          url: 'https://www.test1.com',
+          url: 'https://www.test1.com'
         })
         cy.createBlog({
           title: 'blog with the most likes',
           author: 'author test2',
-          url: 'https://www.test2.com',
+          url: 'https://www.test2.com'
         })
         cy.createBlog({
           title: 'blog with the second most likes',
           author: 'author test3',
-          url: 'https://www.test3.com',
+          url: 'https://www.test3.com'
         })
       })
 
