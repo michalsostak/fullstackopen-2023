@@ -5,18 +5,17 @@ import userEvent from '@testing-library/user-event'
 import BlogForm from './BlogForm'
 
 const testBlogData = {
-  'title': 'Test Title',
-  'author': 'Test Author',
-  'url': 'https://www.test.com',
-  'likes': 2,
-  'user': {
-    'username': 'TestUsername',
-    'name': 'TestName',
-  }
+  title: 'Test Title',
+  author: 'Test Author',
+  url: 'https://www.test.com',
+  likes: 2,
+  user: {
+    username: 'TestUsername',
+    name: 'TestName',
+  },
 }
 
 describe('<BlogForm />', () => {
-
   test('form calls the event handler it received as props with the right details when a new blog is created', async () => {
     const mockUser = userEvent.setup()
     const mockHandler = jest.fn()
@@ -30,7 +29,9 @@ describe('<BlogForm />', () => {
     await mockUser.type(inputAuthor, testBlogData.author)
     await mockUser.type(inputUrl, testBlogData.url)
 
-    const submitCreateButton = container.querySelector('input[name="input-blog-create"]')
+    const submitCreateButton = container.querySelector(
+      'input[name="input-blog-create"]',
+    )
     await mockUser.click(submitCreateButton)
 
     const { user, likes, ...result } = testBlogData

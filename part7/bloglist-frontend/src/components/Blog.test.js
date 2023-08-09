@@ -5,14 +5,14 @@ import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 const testBlogData = {
-  'title': 'Test Title',
-  'author': 'Test Author',
-  'url': 'https://www.test.com',
-  'likes': 2,
-  'user': {
-    'username': 'TestUsername',
-    'name': 'TestName',
-  }
+  title: 'Test Title',
+  author: 'Test Author',
+  url: 'https://www.test.com',
+  likes: 2,
+  user: {
+    username: 'TestUsername',
+    name: 'TestName',
+  },
 }
 
 describe('<Blog />', () => {
@@ -23,11 +23,12 @@ describe('<Blog />', () => {
   beforeEach(() => {
     user = userEvent.setup()
     mockHandler = jest.fn()
-    container = render(<Blog blog={testBlogData} user={user} increaseLikes={mockHandler} />).container
+    container = render(
+      <Blog blog={testBlogData} user={user} increaseLikes={mockHandler} />,
+    ).container
   })
 
   test('renders title and author but not url or likes', () => {
-
     const title = container.querySelector('.blog-title')
     expect(title).toHaveTextContent('Test Title')
     expect(title).toBeVisible()

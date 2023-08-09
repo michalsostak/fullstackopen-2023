@@ -28,7 +28,7 @@ const App = () => {
   const defaultTimeout = 3000
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
         const blogs = await blogService.getAll()
         setBlogs(blogs)
@@ -39,7 +39,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
         if (loggedUserJSON) {
@@ -58,12 +58,11 @@ const App = () => {
 
     try {
       const user = await loginService.login({
-        username, password,
+        username,
+        password,
       })
 
-      window.localStorage.setItem(
-        'loggedBlogAppUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -86,7 +85,11 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(returnedBlog))
-      showNotification('success', `a new blog ${newBlog.title} by ${newBlog.author} added`, defaultTimeout)
+      showNotification(
+        'success',
+        `a new blog ${newBlog.title} by ${newBlog.author} added`,
+        defaultTimeout,
+      )
       noteFormRef.current.toggleVisibility()
     } catch (exception) {
       showNotification('error', exception.response.data.error, defaultTimeout)
@@ -96,8 +99,12 @@ const App = () => {
   const addLike = async (blogId, updatedBlog) => {
     const returnedBlog = await blogService.update(blogId, updatedBlog)
     try {
-      setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
-      showNotification('success', `like for blog ${returnedBlog.title} are now: ${returnedBlog.likes}`, defaultTimeout)
+      setBlogs(blogs.map((blog) => (blog.id !== blogId ? blog : returnedBlog)))
+      showNotification(
+        'success',
+        `like for blog ${returnedBlog.title} are now: ${returnedBlog.likes}`,
+        defaultTimeout,
+      )
     } catch (exception) {
       showNotification('error', exception.response.data.error, defaultTimeout)
     }
@@ -106,7 +113,7 @@ const App = () => {
   const deleteBlog = async (blogId) => {
     try {
       await blogService.remove(blogId)
-      setBlogs(blogs.filter(blog => blog.id !== blogId))
+      setBlogs(blogs.filter((blog) => blog.id !== blogId))
       showNotification('success', `removed blog with id ${blogId}`, defaultTimeout)
     } catch (exception) {
       showNotification('error', exception.response.data.error, defaultTimeout)
@@ -116,8 +123,17 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification message={notificationMessage} notificationType={notificationType} />
-        <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
+        <Notification
+          message={notificationMessage}
+          notificationType={notificationType}
+        />
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+        />
       </div>
     )
   }
@@ -125,12 +141,20 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={notificationMessage} notificationType={notificationType} />
+      <Notification
+        message={notificationMessage}
+        notificationType={notificationType}
+      />
       <LoggedIn user={user} handleLogout={handleLogout} />
       <Togglable buttonLabel="create new blog" ref={noteFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
-      <BlogList blogs={blogs} increaseLikes={addLike} user={user} deleteBlog={deleteBlog} />
+      <BlogList
+        blogs={blogs}
+        increaseLikes={addLike}
+        user={user}
+        deleteBlog={deleteBlog}
+      />
     </div>
   )
 }

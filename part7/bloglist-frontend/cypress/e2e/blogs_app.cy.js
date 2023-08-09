@@ -4,7 +4,7 @@ describe('Blog app', function () {
     const user = {
       name: 'Admin Root',
       username: 'admin',
-      password: 'pass'
+      password: 'pass',
     }
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
     cy.visit('http://localhost:3000')
@@ -58,7 +58,11 @@ describe('Blog app', function () {
 
     describe('When blog is added', function () {
       beforeEach(function () {
-        cy.createBlog({ title: 'command added blog', author: 'author test', url: 'https://www.test.com' })
+        cy.createBlog({
+          title: 'command added blog',
+          author: 'author test',
+          url: 'https://www.test.com',
+        })
       })
 
       it('it can be liked', function () {
@@ -82,7 +86,7 @@ describe('Blog app', function () {
         const secondUser = {
           name: 'Other User',
           username: 'other',
-          password: 'user'
+          password: 'user',
         }
         cy.request('POST', `${Cypress.env('BACKEND')}/users`, secondUser)
 
@@ -99,29 +103,83 @@ describe('Blog app', function () {
 
     describe('When multiple blogs are added', function () {
       beforeEach(function () {
-        cy.createBlog({ title: 'blog with the least amount of likes', author: 'author test1', url: 'https://www.test1.com' })
-        cy.createBlog({ title: 'blog with the most likes', author: 'author test2', url: 'https://www.test2.com' })
-        cy.createBlog({ title: 'blog with the second most likes', author: 'author test3', url: 'https://www.test3.com' })
+        cy.createBlog({
+          title: 'blog with the least amount of likes',
+          author: 'author test1',
+          url: 'https://www.test1.com',
+        })
+        cy.createBlog({
+          title: 'blog with the most likes',
+          author: 'author test2',
+          url: 'https://www.test2.com',
+        })
+        cy.createBlog({
+          title: 'blog with the second most likes',
+          author: 'author test3',
+          url: 'https://www.test3.com',
+        })
       })
 
       it('blogs are sorted according to the number of likes with the most liked blog being first', function () {
         cy.contains('blog with the most likes').parent().find('.blog-view').click()
-        cy.contains('blog with the most likes').parent().find('.blog-like').should('contain', 'like').click().wait(500)
+        cy.contains('blog with the most likes')
+          .parent()
+          .find('.blog-like')
+          .should('contain', 'like')
+          .click()
+          .wait(500)
 
         // changing selection to author because the pop up notification of adding a new blog causes contains to find two elements
-        cy.contains('author test2').parent().find('.blog-like').should('contain', 'like').click().wait(500)
-        cy.contains('author test2').parent().find('.blog-like').should('contain', 'like').click().wait(500)
-        cy.contains('author test2').parent().find('.blog-like').should('contain', 'like').click().wait(500)
-        cy.contains('author test2').parent().find('.blog-likes').should('contain', '4')
+        cy.contains('author test2')
+          .parent()
+          .find('.blog-like')
+          .should('contain', 'like')
+          .click()
+          .wait(500)
+        cy.contains('author test2')
+          .parent()
+          .find('.blog-like')
+          .should('contain', 'like')
+          .click()
+          .wait(500)
+        cy.contains('author test2')
+          .parent()
+          .find('.blog-like')
+          .should('contain', 'like')
+          .click()
+          .wait(500)
+        cy.contains('author test2')
+          .parent()
+          .find('.blog-likes')
+          .should('contain', '4')
 
-        cy.contains('blog with the second most likes').parent().find('.blog-view').click()
-        cy.contains('blog with the second most likes').parent().find('.blog-like').should('contain', 'like').click().wait(500)
-        cy.contains('author test3').parent().find('.blog-like').should('contain', 'like').click()
-        cy.contains('author test3').parent().find('.blog-likes').should('contain', '2')
+        cy.contains('blog with the second most likes')
+          .parent()
+          .find('.blog-view')
+          .click()
+        cy.contains('blog with the second most likes')
+          .parent()
+          .find('.blog-like')
+          .should('contain', 'like')
+          .click()
+          .wait(500)
+        cy.contains('author test3')
+          .parent()
+          .find('.blog-like')
+          .should('contain', 'like')
+          .click()
+        cy.contains('author test3')
+          .parent()
+          .find('.blog-likes')
+          .should('contain', '2')
 
         cy.get('.blog-style').eq(0).should('contain', 'blog with the most likes')
-        cy.get('.blog-style').eq(1).should('contain', 'blog with the second most likes')
-        cy.get('.blog-style').eq(2).should('contain', 'blog with the least amount of likes')
+        cy.get('.blog-style')
+          .eq(1)
+          .should('contain', 'blog with the second most likes')
+        cy.get('.blog-style')
+          .eq(2)
+          .should('contain', 'blog with the least amount of likes')
       })
     })
   })

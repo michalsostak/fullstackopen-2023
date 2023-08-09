@@ -10,7 +10,7 @@ const BlogForm = ({ createBlog }) => {
     const newBlog = {
       title: title,
       author: author,
-      url: url
+      url: url,
     }
     createBlog(newBlog)
 
@@ -26,38 +26,38 @@ const BlogForm = ({ createBlog }) => {
         <div>
           title:
           <input
-            type='text'
+            type="text"
             value={title}
-            name='input-blog-title'
-            id='input-blog-title'
+            name="input-blog-title"
+            id="input-blog-title"
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
           author:
           <input
-            type='text'
+            type="text"
             value={author}
-            name='input-blog-author'
-            id='input-blog-author'
+            name="input-blog-author"
+            id="input-blog-author"
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
           url:
           <input
-            type='text'
+            type="text"
             value={url}
-            name='input-blog-url'
-            id='input-blog-url'
+            name="input-blog-url"
+            id="input-blog-url"
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
         <input
-          type='submit'
-          value='create'
-          name='input-blog-create'
-          id='input-blog-create'
+          type="submit"
+          value="create"
+          name="input-blog-create"
+          id="input-blog-create"
         />
       </form>
     </div>
