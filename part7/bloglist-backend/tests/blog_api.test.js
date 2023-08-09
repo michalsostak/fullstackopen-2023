@@ -31,7 +31,7 @@ describe('get testing when there are initially some blogs saved', () => {
 
   test('a specific blog is within the returned blogs', async () => {
     const response = await api.get('/api/blogs')
-    const titles = response.body.map(r => r.title)
+    const titles = response.body.map((r) => r.title)
     expect(titles).toContain('First class tests')
   }, 100000)
 
@@ -53,7 +53,7 @@ describe('post request adding a new blog', () => {
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
-    const titles = blogsAtEnd.map(r => r.title)
+    const titles = blogsAtEnd.map((r) => r.title)
     expect(titles).toContain('Computer Science I')
   })
 
@@ -128,11 +128,9 @@ describe('deletion of a blog', () => {
 
     const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length - 1
-    )
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
 
-    const titles = blogsAtEnd.map(r => r.title)
+    const titles = blogsAtEnd.map((r) => r.title)
 
     expect(titles).not.toContain(blogToDelete.title)
   })
@@ -180,9 +178,7 @@ test('fails with status code 401 if token is not provided', async () => {
   const blogsAtStart = await helper.blogsInDb()
   const blogToDelete = blogsAtStart[0]
 
-  await api
-    .delete(`/api/blogs/${blogToDelete.id}`)
-    .expect(401)
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(401)
 
   const blogsAtEnd = await helper.blogsInDb()
 

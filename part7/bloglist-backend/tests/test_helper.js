@@ -10,7 +10,7 @@ const initialBlogs = [
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
     likes: 7,
-    __v: 0
+    __v: 0,
   },
   {
     _id: '5a422aa71b54a676234d17f8',
@@ -18,7 +18,7 @@ const initialBlogs = [
     author: 'Edsger W. Dijkstra',
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
     likes: 5,
-    __v: 0
+    __v: 0,
   },
   {
     _id: '5a422b3a1b54a676234d17f9',
@@ -26,7 +26,7 @@ const initialBlogs = [
     author: 'Edsger W. Dijkstra',
     url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
     likes: 12,
-    __v: 0
+    __v: 0,
   },
   {
     _id: '5a422b891b54a676234d17fa',
@@ -34,7 +34,7 @@ const initialBlogs = [
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
     likes: 10,
-    __v: 0
+    __v: 0,
   },
   {
     _id: '5a422ba71b54a676234d17fb',
@@ -42,7 +42,7 @@ const initialBlogs = [
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
     likes: 0,
-    __v: 0
+    __v: 0,
   },
   {
     _id: '5a422bc61b54a676234d17fc',
@@ -50,27 +50,27 @@ const initialBlogs = [
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
     likes: 2,
-    __v: 0
-  }
+    __v: 0,
+  },
 ]
 
 const newBlog = {
   title: 'Computer Science I',
   author: 'Chris Bourke',
   url: 'https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf',
-  likes: 4
+  likes: 4,
 }
 
 const newUser = {
   username: 'testUser',
   name: 'Jon Doe',
-  password: 'testPassword'
+  password: 'testPassword',
 }
 
 const secondaryUser = {
   username: 'secondUser',
   name: 'Jane Doe',
-  password: 'testPasswordSecond'
+  password: 'testPasswordSecond',
 }
 
 const nonExistingId = async () => {
@@ -83,12 +83,12 @@ const nonExistingId = async () => {
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
-  return blogs.map(blog => blog.toJSON())
+  return blogs.map((blog) => blog.toJSON())
 }
 
 const usersInDb = async () => {
   const users = await User.find({})
-  return users.map(user => user.toJSON())
+  return users.map((user) => user.toJSON())
 }
 
 const createUser = async (userDetails) => {
@@ -106,18 +106,14 @@ const createUser = async (userDetails) => {
 
 const getUserToken = async (userDetails) => {
   const user = await User.findOne({
-    username: userDetails.username
+    username: userDetails.username,
   })
   const userForToken = {
     username: user.username,
     id: user._id,
   }
 
-  const token = jwt.sign(
-    userForToken,
-    process.env.SECRET,
-    { expiresIn: 60*60 }
-  )
+  const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 })
 
   return token
 }
@@ -126,18 +122,26 @@ const insertBlogsWithUser = async (userDetails) => {
   await createUser(userDetails)
 
   const userForBlogs = await User.findOne({ username: userDetails.username })
-  await Promise.all(initialBlogs.map(async (blog) => {
-    const blogWihUser = new Blog({ ...blog, user: userForBlogs._id })
-    const savedBlog = await blogWihUser.save()
-    userForBlogs.blogs = userForBlogs.blogs.concat(savedBlog._id)
-  })
+  await Promise.all(
+    initialBlogs.map(async (blog) => {
+      const blogWihUser = new Blog({ ...blog, user: userForBlogs._id })
+      const savedBlog = await blogWihUser.save()
+      userForBlogs.blogs = userForBlogs.blogs.concat(savedBlog._id)
+    }),
   )
 
   return await userForBlogs.save()
 }
 
-
-
 module.exports = {
-  initialBlogs, blogsInDb, newBlog, nonExistingId, usersInDb, newUser, createUser, getUserToken, insertBlogsWithUser, secondaryUser
+  initialBlogs,
+  blogsInDb,
+  newBlog,
+  nonExistingId,
+  usersInDb,
+  newUser,
+  createUser,
+  getUserToken,
+  insertBlogsWithUser,
+  secondaryUser,
 }

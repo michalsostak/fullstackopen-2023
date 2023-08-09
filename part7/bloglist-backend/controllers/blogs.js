@@ -3,9 +3,7 @@ const Blog = require('../models/blog')
 const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog
-    .find({})
-    .populate('user', { username: 1, name: 1, id: 1 })
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
   response.json(blogs)
 })
 
@@ -25,10 +23,13 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
 blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
   const user = request.user
   const userMatch = user.blogs.filter(
-    blogid => blogid.toString() === request.params.id)
+    (blogid) => blogid.toString() === request.params.id,
+  )
 
   if (!userMatch || userMatch.length === 0) {
-    return response.status(403).json({ error: 'User does not have permission to delete this blog' })
+    return response
+      .status(403)
+      .json({ error: 'User does not have permission to delete this blog' })
   }
 
   await Blog.findByIdAndRemove(request.params.id)
@@ -36,9 +37,9 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  const updatedBlog = await Blog
-    .findByIdAndUpdate(request.params.id, request.body, { new: true })
-    .populate('user', { username: 1, name: 1, id: 1 })
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, {
+    new: true,
+  }).populate('user', { username: 1, name: 1, id: 1 })
 
   response.json(updatedBlog)
 })
