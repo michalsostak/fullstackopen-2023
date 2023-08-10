@@ -1,9 +1,15 @@
 import { useState } from 'react'
+import { useMutation, useQueryClient } from 'react-query'
+import { useNotificationDispatch } from '../NotificationContext'
+import { createBlog } from '../requests'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ blogFormRef }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const queryClient = useQueryClient()
+  const dispatchNotification = useNotificationDispatch()
 
   const handleCreate = (event) => {
     event.preventDefault()
@@ -12,12 +18,35 @@ const BlogForm = ({ createBlog }) => {
       author: author,
       url: url
     }
-    createBlog(newBlog)
-
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    createBlogMutation.mutate(newBlog)
   }
+
+  const createBlogMutation = useMutation(createBlog, {
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData('blogs')
+      queryClient.setQueryData('blogs', blogs.concat(newBlog))
+      dispatchNotification({
+        type: 'notify',
+        payload: {
+          content: `a new blog ${newBlog.title} by ${newBlog.author} added`,
+          messageType: 'success'
+        }
+      })
+      blogFormRef.current.toggleVisibility()
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    },
+    onError: (error) => {
+      dispatchNotification({
+        type: 'notify',
+        payload: {
+          content: error.response.data.error,
+          messageType: 'error'
+        }
+      })
+    }
+  })
 
   return (
     <div>

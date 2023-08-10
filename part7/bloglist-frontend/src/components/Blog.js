@@ -1,30 +1,93 @@
 import { useState } from 'react'
+import { useUserValue } from '../UserContext'
+import { useMutation, useQueryClient } from 'react-query'
+import { useNotificationDispatch } from '../NotificationContext'
+import { updateBlog, deleteBlog } from '../requests'
 
-const Blog = ({ blog, increaseLikes, user, deleteBlog }) => {
+const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
+  const queryClient = useQueryClient()
+  const userValue = useUserValue()
+  const dispatchNotification = useNotificationDispatch()
+
+  const updateLikeMutation = useMutation(updateBlog, {
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData('blogs')
+      queryClient.setQueryData(
+        'blogs',
+        blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b))
+      )
+      dispatchNotification({
+        type: 'notify',
+        payload: {
+          content: `like for blog ${updatedBlog.title} are now: ${updatedBlog.likes}`,
+          messageType: 'success'
+        }
+      })
+    },
+    onError: (error) => {
+      dispatchNotification({
+        type: 'notify',
+        payload: {
+          content: error.response.data.error,
+          messageType: 'error'
+        }
+      })
+    }
+  })
+
+  const deleteBlogMutation = useMutation(deleteBlog, {
+    onSuccess: (data, variables) => {
+      const blogs = queryClient.getQueryData('blogs')
+      queryClient.setQueryData(
+        'blogs',
+        blogs.filter((b) => b.id !== variables.blogId)
+      )
+      dispatchNotification({
+        type: 'notify',
+        payload: {
+          content: `removed blog with id ${variables.blogId}`,
+          messageType: 'success'
+        }
+      })
+    },
+    onError: (error) => {
+      dispatchNotification({
+        type: 'notify',
+        payload: {
+          content: error.response.data.error,
+          messageType: 'error'
+        }
+      })
+    }
+  })
+
   const toggleVisibility = () => {
     setVisible(!visible)
   }
 
-  const addLike = (blogId) => {
-    const updatedBlog = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes + 1,
-      user: blog.user.id
-    }
-
-    increaseLikes(blogId, updatedBlog)
+  const addLike = () => {
+    handleLike(blog)
   }
 
   const handleRemove = () => {
-    window.confirm(`Remove blog ${blog.title} by ${blog.author}`) &&
-      deleteBlog(blog.id)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      handleDelete(blog.id)
+    }
+  }
+
+  const handleLike = (blog) => {
+    const { user, likes, ...remainder } = blog
+    const updatedBlog = { user: blog.user.id, likes: blog.likes + 1, ...remainder }
+    updateLikeMutation.mutate(updatedBlog)
+  }
+
+  const handleDelete = (blogId) => {
+    deleteBlogMutation.mutate({ blogId })
   }
 
   return (
@@ -44,12 +107,12 @@ const Blog = ({ blog, increaseLikes, user, deleteBlog }) => {
         <div>
           <div className="blog-url">{blog.url}</div>
           <span className="blog-likes">{blog.likes}</span>
-          <button className="blog-like" onClick={() => addLike(blog.id)}>
+          <button className="blog-like" onClick={addLike}>
             like
           </button>
           <div className="blog-username">{blog.user.name}</div>
         </div>
-        {blog.user.username === user.username && (
+        {blog.user.username === userValue.username && (
           <button className="blog-remove" onClick={handleRemove}>
             remove
           </button>
