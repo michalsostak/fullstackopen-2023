@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useUserDispatch } from '../UserContext'
 import loginService from '../services/login'
-import blogService from '../services/blogs'
+import userService from '../services/user'
 import { useNotificationDispatch } from '../NotificationContext'
 
 const LoginForm = () => {
@@ -18,9 +18,7 @@ const LoginForm = () => {
         username,
         password
       })
-
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-      blogService.setToken(user.token)
+      userService.setUser(user)
       dispatchUser({
         type: 'login',
         payload: {

@@ -3,6 +3,9 @@ import { createContext, useReducer, useContext } from 'react'
 const userReducer = (state, action) => {
   switch (action.type) {
     case 'login':
+      if (action.payload === null) {
+        return null
+      }
       return {
         username: action.payload.username,
         name: action.payload.name

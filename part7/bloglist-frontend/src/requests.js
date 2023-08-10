@@ -1,31 +1,30 @@
 import axios from 'axios'
-import blogService from './services/blogs'
-
 const baseUrl = '/api/blogs'
+import userService from './services/user'
 
-export const getAllBlogs = () => axios.get(baseUrl).then((res) => res.data)
+const headers = {
+  Authorization: userService.getUser()
+    ? `Bearer ${userService.getUser().token}`
+    : null
+}
+
+export const getAllBlogs = async () => {
+  const request = await axios.get(baseUrl)
+  return request.data
+}
 
 export const createBlog = async (newBlog) => {
-  const config = {
-    headers: { Authorization: blogService.getToken() }
-  }
-  return axios.post(baseUrl, newBlog, config).then((res) => res.data)
+  const request = await axios.post(baseUrl, newBlog, { headers })
+  return request.data
 }
 
 export const updateBlog = async (updatedBlog) => {
-  const config = {
-    headers: { Authorization: blogService.getToken() }
-  }
-  return axios
-    .put(`${baseUrl}/${updatedBlog.id}`, updatedBlog, config)
-    .then((response) => response.data)
+  const request = await axios.put(`${baseUrl}/${updatedBlog.id}`, updatedBlog, {
+    headers
+  })
+  return request.data
 }
 
 export const deleteBlog = async ({ blogId }) => {
-  const config = {
-    headers: { Authorization: blogService.getToken() }
-  }
-  return axios
-    .delete(`${baseUrl}/${blogId}`, config)
-    .then((response) => response.data)
+  await axios.delete(`${baseUrl}/${blogId}`, { headers })
 }

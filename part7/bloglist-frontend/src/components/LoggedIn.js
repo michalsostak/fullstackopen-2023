@@ -1,5 +1,5 @@
 import { useUserValue, useUserDispatch } from '../UserContext'
-import blogService from '../services/blogs'
+import userService from '../services/user'
 import { useQueryClient } from 'react-query'
 
 const LoggedIn = () => {
@@ -8,8 +8,7 @@ const LoggedIn = () => {
   const queryClient = useQueryClient()
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogAppUser')
-    blogService.setToken(null)
+    userService.clearUser()
     dispatchUser({ type: 'logout' })
     queryClient.clear('blogs')
   }
