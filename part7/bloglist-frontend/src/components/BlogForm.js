@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import { useNotificationDispatch } from '../NotificationContext'
-import { createBlog } from '../requests'
+import { createBlog } from '../requests-blogs'
 
-const BlogForm = ({ blogFormRef }) => {
+const BlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -32,7 +32,7 @@ const BlogForm = ({ blogFormRef }) => {
           messageType: 'success'
         }
       })
-      blogFormRef.current.toggleVisibility()
+      // blogFormRef.current.toggleVisibility()
       setTitle('')
       setAuthor('')
       setUrl('')

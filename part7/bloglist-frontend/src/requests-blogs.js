@@ -14,6 +14,7 @@ export const getAllBlogs = async () => {
 }
 
 export const createBlog = async (newBlog) => {
+  console.log(newBlog, headers)
   const request = await axios.post(baseUrl, newBlog, { headers })
   return request.data
 }

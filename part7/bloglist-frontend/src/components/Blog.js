@@ -1,14 +1,14 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { useUserValue } from '../UserContext'
 import { useMutation, useQueryClient } from 'react-query'
 import { useNotificationDispatch } from '../NotificationContext'
-import { updateBlog, deleteBlog } from '../requests'
+import { updateBlog, deleteBlog } from '../requests-blogs'
 
 const Blog = ({ blog }) => {
-  const [visible, setVisible] = useState(false)
+  // const [visible, setVisible] = useState(false)
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
+  // const hideWhenVisible = { display: visible ? 'none' : '' }
+  // const showWhenVisible = { display: visible ? '' : 'none' }
 
   const queryClient = useQueryClient()
   const userValue = useUserValue()
@@ -66,9 +66,9 @@ const Blog = ({ blog }) => {
     }
   })
 
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
+  // const toggleVisibility = () => {
+  //   setVisible(!visible)
+  // }
 
   const addLike = () => {
     handleLike(blog)
@@ -90,34 +90,38 @@ const Blog = ({ blog }) => {
     deleteBlogMutation.mutate({ blogId })
   }
 
+  if (!blog) {
+    return null
+  }
+
   return (
     <div className="blog-style">
       <span className="blog-title">{blog.title}</span>
       &nbsp;
       <span className="blog-author">{blog.author}</span>
-      <span style={hideWhenVisible}>
+      {/* <span style={hideWhenVisible}>
         <button className="blog-view" onClick={toggleVisibility}>
           view
         </button>
-      </span>
-      <span style={showWhenVisible}>
+      </span> */}
+      {/* <span style={showWhenVisible}>
         <button className="blog-hide" onClick={toggleVisibility}>
           hide
+        </button> */}
+      <div>
+        <div className="blog-url">{blog.url}</div>
+        <span className="blog-likes">{blog.likes}</span>
+        <button className="blog-like" onClick={addLike}>
+          like
         </button>
-        <div>
-          <div className="blog-url">{blog.url}</div>
-          <span className="blog-likes">{blog.likes}</span>
-          <button className="blog-like" onClick={addLike}>
-            like
-          </button>
-          <div className="blog-username">{blog.user.name}</div>
-        </div>
-        {blog.user.username === userValue.username && (
-          <button className="blog-remove" onClick={handleRemove}>
-            remove
-          </button>
-        )}
-      </span>
+        <div className="blog-username">{blog.user.name}</div>
+      </div>
+      {blog.user.username === userValue.username && (
+        <button className="blog-remove" onClick={handleRemove}>
+          remove
+        </button>
+      )}
+      {/* </span> */}
     </div>
   )
 }

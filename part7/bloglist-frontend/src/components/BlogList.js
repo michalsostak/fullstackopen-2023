@@ -1,8 +1,12 @@
-import Blog from './Blog'
+// import { useRef } from 'react'
 import { useQuery } from 'react-query'
-import { getAllBlogs } from '../requests'
+import { getAllBlogs } from '../requests-blogs'
+import { Link } from 'react-router-dom'
+import BlogForm from './BlogForm'
+import Togglable from './Togglable'
 
 const BlogList = () => {
+  // const blogFormRef = useRef()
   const { isLoading, isError, data, error } = useQuery('blogs', getAllBlogs, {
     refetchOnWindowFocus: false,
     retry: 1
@@ -20,12 +24,18 @@ const BlogList = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <Togglable buttonLabel="create new blog">
+        <BlogForm />
+      </Togglable>
       {blogs
         .sort((a, b) => (a.likes > b.likes ? 1 : -1))
         .reverse()
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <div key={blog.id} className="blog-style">
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title} {blog.author}
+            </Link>
+          </div>
         ))}
     </div>
   )

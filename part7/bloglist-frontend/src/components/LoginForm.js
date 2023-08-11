@@ -3,12 +3,14 @@ import { useUserDispatch } from '../UserContext'
 import loginService from '../services/login'
 import userService from '../services/user'
 import { useNotificationDispatch } from '../NotificationContext'
+import { useNavigate } from 'react-router-dom'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatchUser = useUserDispatch()
   const dispatchNotification = useNotificationDispatch()
+  const navigate = useNavigate()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -26,6 +28,7 @@ const LoginForm = () => {
           password: password
         }
       })
+      navigate('/')
     } catch (error) {
       dispatchNotification({
         type: 'notify',
@@ -35,6 +38,10 @@ const LoginForm = () => {
         }
       })
     }
+  }
+
+  if (userService.getUser()) {
+    navigate('/')
   }
 
   return (
