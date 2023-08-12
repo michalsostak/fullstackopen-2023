@@ -42,7 +42,7 @@ const LoginForm = () => {
       dispatchNotification({
         type: 'notify',
         payload: {
-          content: error.response.data.error,
+          content: error.message,
           messageType: 'error'
         }
       })
