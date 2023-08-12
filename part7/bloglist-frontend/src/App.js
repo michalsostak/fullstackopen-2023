@@ -20,14 +20,16 @@ const App = () => {
   const blogsData = useQuery('blogs', getAllBlogs)
 
   const matchUser = useMatch('/users/:id')
-  const user = matchUser
-    ? usersData.data.find((u) => u.id === matchUser.params.id)
-    : null
+  const user =
+    matchUser && usersData.isSuccess
+      ? usersData.data.find((u) => u.id === matchUser.params.id)
+      : null
 
   const matchBlog = useMatch('/blogs/:id')
-  const blog = matchBlog
-    ? blogsData.data.find((b) => b.id === matchBlog.params.id)
-    : null
+  const blog =
+    matchBlog && blogsData.isSuccess
+      ? blogsData.data.find((b) => b.id === matchBlog.params.id)
+      : null
 
   useEffect(() => {
     const user = userService.getUser()

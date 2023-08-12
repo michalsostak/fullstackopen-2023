@@ -1,10 +1,12 @@
-// import { useState } from 'react'
+import { useState } from 'react'
 import { useUserValue } from '../UserContext'
 import { useMutation, useQueryClient } from 'react-query'
 import { useNotificationDispatch } from '../NotificationContext'
 import { updateBlog, deleteBlog } from '../requests-blogs'
 
 const Blog = ({ blog }) => {
+  const [comment, setComment] = useState('')
+
   // const [visible, setVisible] = useState(false)
 
   // const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -25,6 +27,32 @@ const Blog = ({ blog }) => {
         type: 'notify',
         payload: {
           content: `like for blog ${updatedBlog.title} are now: ${updatedBlog.likes}`,
+          messageType: 'success'
+        }
+      })
+    },
+    onError: (error) => {
+      dispatchNotification({
+        type: 'notify',
+        payload: {
+          content: error.response.data.error,
+          messageType: 'error'
+        }
+      })
+    }
+  })
+
+  const updateCommentMutation = useMutation(updateBlog, {
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData('blogs')
+      queryClient.setQueryData(
+        'blogs',
+        blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b))
+      )
+      dispatchNotification({
+        type: 'notify',
+        payload: {
+          content: `new comment for blog ${updatedBlog.title} added`,
           messageType: 'success'
         }
       })
@@ -80,7 +108,7 @@ const Blog = ({ blog }) => {
     }
   }
 
-  const handleLike = (blog) => {
+  const handleLike = () => {
     const { user, likes, ...remainder } = blog
     const updatedBlog = { user: blog.user.id, likes: blog.likes + 1, ...remainder }
     updateLikeMutation.mutate(updatedBlog)
@@ -88,6 +116,17 @@ const Blog = ({ blog }) => {
 
   const handleDelete = (blogId) => {
     deleteBlogMutation.mutate({ blogId })
+  }
+
+  const handleComment = (event) => {
+    event.preventDefault()
+    const { user, comments, ...remainder } = blog
+    const updatedBlogWithNewComment = {
+      user: blog.user.id,
+      comments: comments.concat(comment),
+      ...remainder
+    }
+    updateCommentMutation.mutate(updatedBlogWithNewComment)
   }
 
   if (!blog) {
@@ -121,6 +160,24 @@ const Blog = ({ blog }) => {
           remove
         </button>
       )}
+      <h2>comments</h2>
+      <div>
+        <form onSubmit={handleComment}>
+          <input
+            type="text"
+            value={comment}
+            name="input-blog-comment"
+            id="input-blog-comment"
+            onChange={({ target }) => setComment(target.value)}
+          />
+          <input type="submit" value="add comment" />
+        </form>
+      </div>
+      <ul>
+        {blog.comments.map((c) => (
+          <li key={c}>{c}</li>
+        ))}
+      </ul>
       {/* </span> */}
     </div>
   )

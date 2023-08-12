@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useUserDispatch } from '../UserContext'
 import loginService from '../services/login'
 import userService from '../services/user'
@@ -11,6 +11,14 @@ const LoginForm = () => {
   const dispatchUser = useUserDispatch()
   const dispatchNotification = useNotificationDispatch()
   const navigate = useNavigate()
+
+  const userData = userService.getUser()
+
+  useEffect(() => {
+    if (userData) {
+      navigate('/')
+    }
+  }, [userData, navigate])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -40,8 +48,8 @@ const LoginForm = () => {
     }
   }
 
-  if (userService.getUser()) {
-    navigate('/')
+  if (userData) {
+    return null
   }
 
   return (
