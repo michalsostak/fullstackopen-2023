@@ -2,6 +2,7 @@ import { useUserValue, useUserDispatch } from '../UserContext'
 import userService from '../services/user'
 import { useQueryClient } from 'react-query'
 import { useNavigate, Link } from 'react-router-dom'
+import { Button, AppBar, Toolbar } from '@mui/material'
 
 const Menu = () => {
   const userValue = useUserValue()
@@ -21,12 +22,23 @@ const Menu = () => {
   }
 
   return (
-    <div>
-      <Link to="/blogs">blogs</Link>
-      <Link to="/users">users</Link>
-      {userValue.username} logged in
-      <button onClick={handleLogout}>logout</button>
-    </div>
+    <AppBar position="static">
+      <Toolbar>
+        <Button color="inherit" component={Link} to="/blogs">
+          Blogs
+        </Button>
+        <Button color="inherit" component={Link} to="/users">
+          Users
+        </Button>
+        <Button color="inherit" onClick={handleLogout}>
+          logout
+        </Button>
+        <em>{userValue.name} logged in</em>
+        <Button color="primary" onClick={handleLogout}>
+          logout
+        </Button>
+      </Toolbar>
+    </AppBar>
   )
 }
 

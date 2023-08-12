@@ -3,6 +3,16 @@ import { getAllBlogs } from '../requests-blogs'
 import { Link } from 'react-router-dom'
 import BlogForm from './BlogForm'
 import Togglable from './Togglable'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  TableHead,
+  Paper,
+  Typography
+} from '@mui/material'
 
 const BlogList = () => {
   const { isLoading, isError, data, error } = useQuery('blogs', getAllBlogs, {
@@ -25,16 +35,34 @@ const BlogList = () => {
       <Togglable buttonLabel="create new blog">
         <BlogForm />
       </Togglable>
-      {blogs
-        .sort((a, b) => (a.likes > b.likes ? 1 : -1))
-        .reverse()
-        .map((blog) => (
-          <div key={blog.id} className="blog-style">
-            <Link to={`/blogs/${blog.id}`}>
-              {blog.title} {blog.author}
-            </Link>
-          </div>
-        ))}
+      <Typography variant="h5">List of blogs</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>Author</TableCell>
+              <TableCell>Created by</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {blogs
+              .sort((a, b) => (a.likes > b.likes ? 1 : -1))
+              .reverse()
+              .map((blog) => (
+                <TableRow key={blog.id}>
+                  <TableCell>
+                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link to={`/blogs/${blog.id}`}>{blog.author}</Link>
+                  </TableCell>
+                  <TableCell>{blog.user.name}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

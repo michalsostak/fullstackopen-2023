@@ -3,6 +3,7 @@ import {
   useNotificationDispatch
 } from '../NotificationContext'
 import { useEffect } from 'react'
+import { Alert } from '@mui/material'
 
 const Notification = () => {
   const { content, messageType, timeout } = useNotificationValue()
@@ -21,7 +22,7 @@ const Notification = () => {
 
   if (content === null || content === '') return null
 
-  return <div className={`notification ${messageType}`}>{content}</div>
+  return <Alert severity={messageType}>{content}</Alert>
 }
 
 export default Notification

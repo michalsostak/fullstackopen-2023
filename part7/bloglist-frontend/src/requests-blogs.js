@@ -1,6 +1,7 @@
 import axios from 'axios'
-const baseUrl = '/api/blogs'
 import userService from './services/user'
+
+const baseUrl = '/api/blogs'
 
 const headers = {
   Authorization: userService.getUser()
@@ -14,7 +15,6 @@ export const getAllBlogs = async () => {
 }
 
 export const createBlog = async (newBlog) => {
-  console.log(newBlog, headers)
   const request = await axios.post(baseUrl, newBlog, { headers })
   return request.data
 }

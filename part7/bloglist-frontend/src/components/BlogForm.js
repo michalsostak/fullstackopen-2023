@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import { useNotificationDispatch } from '../NotificationContext'
 import { createBlog } from '../requests-blogs'
+import { TextField, Grid, Typography, Button } from '@mui/material'
 
 const BlogForm = () => {
   const [title, setTitle] = useState('')
@@ -49,44 +50,50 @@ const BlogForm = () => {
 
   return (
     <div>
-      <h2>create new</h2>
+      <Typography variant="h5">Create new</Typography>
       <form onSubmit={handleCreate}>
-        <div>
-          title:
-          <input
-            type="text"
-            value={title}
-            name="input-blog-title"
-            id="input-blog-title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            type="text"
-            value={author}
-            name="input-blog-author"
-            id="input-blog-author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type="text"
-            value={url}
-            name="input-blog-url"
-            id="input-blog-url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <input
-          type="submit"
-          value="create"
-          name="input-blog-create"
-          id="input-blog-create"
-        />
+        <Grid container direction={'column'} spacing={2}>
+          <Grid item>
+            <TextField
+              label="title"
+              type="text"
+              value={title}
+              name="input-blog-title"
+              id="input-blog-title"
+              onChange={({ target }) => setTitle(target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label="author"
+              type="text"
+              value={author}
+              name="input-blog-author"
+              id="input-blog-author"
+              onChange={({ target }) => setAuthor(target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label="url"
+              type="text"
+              value={url}
+              name="input-blog-url"
+              id="input-blog-url"
+              onChange={({ target }) => setUrl(target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              variant="outlined"
+              type="submit"
+              name="input-blog-create"
+              id="input-blog-create"
+            >
+              Create
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </div>
   )

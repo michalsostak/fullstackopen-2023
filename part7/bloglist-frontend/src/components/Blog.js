@@ -3,12 +3,29 @@ import { useUserValue } from '../UserContext'
 import { useMutation, useQueryClient } from 'react-query'
 import { useNotificationDispatch } from '../NotificationContext'
 import { updateBlog, deleteBlog } from '../requests-blogs'
+import { useNavigate } from 'react-router-dom'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  Box,
+  List,
+  ListItem,
+  Typography
+} from '@mui/material'
 
 const Blog = ({ blog }) => {
   const [comment, setComment] = useState('')
   const queryClient = useQueryClient()
   const userValue = useUserValue()
   const dispatchNotification = useNotificationDispatch()
+  const navigate = useNavigate()
 
   const updateLikeMutation = useMutation(updateBlog, {
     onSuccess: (updatedBlog) => {
@@ -50,6 +67,7 @@ const Blog = ({ blog }) => {
           messageType: 'success'
         }
       })
+      setComment('')
     },
     onError: (error) => {
       dispatchNotification({
@@ -76,6 +94,7 @@ const Blog = ({ blog }) => {
           messageType: 'success'
         }
       })
+      navigate('/blogs')
     },
     onError: (error) => {
       dispatchNotification({
@@ -124,41 +143,73 @@ const Blog = ({ blog }) => {
   }
 
   return (
-    <div className="blog-style">
-      <span className="blog-title">{blog.title}</span>
-      &nbsp;
-      <span className="blog-author">{blog.author}</span>
-      <div>
-        <div className="blog-url">{blog.url}</div>
-        <span className="blog-likes">{blog.likes}</span>
-        <button className="blog-like" onClick={addLike}>
-          like
-        </button>
-        <div className="blog-username">{blog.user.name}</div>
-      </div>
-      {blog.user.username === userValue.username && (
-        <button className="blog-remove" onClick={handleRemove}>
-          remove
-        </button>
-      )}
-      <h2>comments</h2>
+    <div>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>{blog.title}</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Author</TableCell>
+              <TableCell>{blog.author}</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Url</TableCell>
+              <TableCell>{blog.url}</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Likes</TableCell>
+              <TableCell>{blog.likes}</TableCell>
+              <TableCell>
+                <Button variant="contained" onClick={addLike}>
+                  like
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Creator</TableCell>
+              <TableCell>{blog.user.name}</TableCell>
+              <TableCell>
+                {blog.user.username === userValue.username && (
+                  <Button variant="contained" onClick={handleRemove}>
+                    remove
+                  </Button>
+                )}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Box mt={5}>
+        <Typography variant="h6">Comments</Typography>
+      </Box>
       <div>
         <form onSubmit={handleComment}>
-          <input
+          <TextField
             type="text"
             value={comment}
             name="input-blog-comment"
             id="input-blog-comment"
             onChange={({ target }) => setComment(target.value)}
           />
-          <input type="submit" value="add comment" />
+          <Box spacing={5} mt={3}>
+            <Button type="submit" variant="contained">
+              Add comment
+            </Button>
+          </Box>
         </form>
       </div>
-      <ul>
+      <List>
         {blog.comments.map((c) => (
-          <li key={c}>{c}</li>
+          <ListItem key={c}>{c}</ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   )
 }

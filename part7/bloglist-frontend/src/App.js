@@ -7,11 +7,13 @@ import Users from './components/Users'
 import User from './components/User'
 import Blog from './components/Blog'
 import Menu from './components/Menu'
+import Header from './components/Header'
 import { useQuery } from 'react-query'
 import { useUserValue, useUserDispatch } from './UserContext'
 import { Routes, Route, Navigate, useMatch } from 'react-router-dom'
 import { getAllUsers } from './requests-users'
 import { getAllBlogs } from './requests-blogs'
+import { Container } from '@mui/material'
 
 const App = () => {
   const dispatchUser = useUserDispatch()
@@ -37,10 +39,10 @@ const App = () => {
   }, [dispatchUser])
 
   return (
-    <div>
-      <h2>blogs</h2>
+    <Container>
       <Notification />
       <Menu />
+      <Header />
       <Routes>
         <Route
           path="/"
@@ -52,7 +54,7 @@ const App = () => {
         <Route path="/blogs/:id" element={<Blog blog={blog} />} />
         <Route path="/blogs" element={<BlogList />} />
       </Routes>
-    </div>
+    </Container>
   )
 }
 

@@ -4,6 +4,7 @@ import loginService from '../services/login'
 import userService from '../services/user'
 import { useNotificationDispatch } from '../NotificationContext'
 import { useNavigate } from 'react-router-dom'
+import { TextField, Button, Grid } from '@mui/material'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -32,8 +33,8 @@ const LoginForm = () => {
       dispatchUser({
         type: 'login',
         payload: {
-          username: username,
-          password: password
+          username: user.username,
+          name: user.name
         }
       })
       navigate('/')
@@ -54,27 +55,37 @@ const LoginForm = () => {
 
   return (
     <>
-      <h2>log in to application</h2>
       <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            id="input-login-username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            id="input-login-password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <input type="submit" value="login" id="input-login-submit" />
+        <Grid container direction={'column'} spacing={3}>
+          <Grid item>
+            <TextField
+              label="username"
+              type="text"
+              value={username}
+              id="input-login-username"
+              onChange={({ target }) => setUsername(target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label="password"
+              type="password"
+              value={password}
+              id="input-login-password"
+              onChange={({ target }) => setPassword(target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              type="submit"
+              id="input-login-submit"
+              variant="contained"
+              color="primary"
+            >
+              Login
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </>
   )
