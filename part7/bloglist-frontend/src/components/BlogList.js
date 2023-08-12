@@ -1,4 +1,3 @@
-// import { useRef } from 'react'
 import { useQuery } from 'react-query'
 import { getAllBlogs } from '../requests-blogs'
 import { Link } from 'react-router-dom'
@@ -6,7 +5,6 @@ import BlogForm from './BlogForm'
 import Togglable from './Togglable'
 
 const BlogList = () => {
-  // const blogFormRef = useRef()
   const { isLoading, isError, data, error } = useQuery('blogs', getAllBlogs, {
     refetchOnWindowFocus: false,
     retry: 1

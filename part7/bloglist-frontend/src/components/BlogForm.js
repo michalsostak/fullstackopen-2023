@@ -32,7 +32,6 @@ const BlogForm = () => {
           messageType: 'success'
         }
       })
-      // blogFormRef.current.toggleVisibility()
       setTitle('')
       setAuthor('')
       setUrl('')

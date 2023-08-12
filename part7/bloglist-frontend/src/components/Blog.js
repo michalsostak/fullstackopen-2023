@@ -6,12 +6,6 @@ import { updateBlog, deleteBlog } from '../requests-blogs'
 
 const Blog = ({ blog }) => {
   const [comment, setComment] = useState('')
-
-  // const [visible, setVisible] = useState(false)
-
-  // const hideWhenVisible = { display: visible ? 'none' : '' }
-  // const showWhenVisible = { display: visible ? '' : 'none' }
-
   const queryClient = useQueryClient()
   const userValue = useUserValue()
   const dispatchNotification = useNotificationDispatch()
@@ -94,10 +88,6 @@ const Blog = ({ blog }) => {
     }
   })
 
-  // const toggleVisibility = () => {
-  //   setVisible(!visible)
-  // }
-
   const addLike = () => {
     handleLike(blog)
   }
@@ -138,15 +128,6 @@ const Blog = ({ blog }) => {
       <span className="blog-title">{blog.title}</span>
       &nbsp;
       <span className="blog-author">{blog.author}</span>
-      {/* <span style={hideWhenVisible}>
-        <button className="blog-view" onClick={toggleVisibility}>
-          view
-        </button>
-      </span> */}
-      {/* <span style={showWhenVisible}>
-        <button className="blog-hide" onClick={toggleVisibility}>
-          hide
-        </button> */}
       <div>
         <div className="blog-url">{blog.url}</div>
         <span className="blog-likes">{blog.likes}</span>
@@ -178,7 +159,6 @@ const Blog = ({ blog }) => {
           <li key={c}>{c}</li>
         ))}
       </ul>
-      {/* </span> */}
     </div>
   )
 }

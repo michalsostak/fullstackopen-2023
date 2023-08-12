@@ -11,12 +11,6 @@ const Togglable = (props) => {
     setVisible(!visible)
   }
 
-  // useImperativeHandle(refs, () => {
-  //   return {
-  //     toggleVisibility
-  //   }
-  // })
-
   return (
     <div>
       <div style={hideWhenVisible}>
@@ -33,7 +27,5 @@ const Togglable = (props) => {
 Togglable.propTypes = {
   buttonLabel: PropTypes.string.isRequired
 }
-
-// Togglable.displayName = 'Togglable'
 
 export default Togglable
