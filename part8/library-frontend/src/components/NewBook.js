@@ -11,10 +11,6 @@ const NewBook = () => {
 
   const [ createBook ] = useMutation(CREATE_BOOK, {
     refetchQueries: [  {query: ALL_BOOKS }, {query: ALL_AUTHORS } ],
-    // onError: (error) => {
-    //   const messages = error.graphQLErrors[0].message
-    //   setError(messages)
-    // }
   })
 
   const submit = async (event) => {
