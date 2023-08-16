@@ -5,6 +5,8 @@ const { GraphQLError } = require('graphql')
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 const Person = require('./models/person')
+const User = require('./models/user')
+
 const jwt = require('jsonwebtoken')
 
 require('dotenv').config()
@@ -157,9 +159,8 @@ const resolvers = {
     },
     editNumber: async (root, args) => {
       const person = await Person.findOne({ name: args.name })
-      person.phone = args.phone
-
       try {
+        person.phone = args.phone
         await person.save()
       } catch (error) {
         throw new GraphQLError('Saving number failed', {
