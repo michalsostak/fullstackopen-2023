@@ -13,7 +13,6 @@ const LoginForm = ({ setError, setToken }) => {
     }
   })
 
-
   useEffect(() => {
     if ( result.data ) {
       const token = result.data.login.value
