@@ -2,11 +2,8 @@ import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS } from '../queries'
 import BirthyearForm from './BirthyearForm'
 
-const Authors = () => {
-  const result = useQuery(ALL_AUTHORS, {
-    refetchQueries: [ { query: ALL_AUTHORS } ]
-  })
-
+const Authors = ({ token }) => {
+  const result = useQuery(ALL_AUTHORS)
   if (result.loading)  {
     return <div>loading...</div>
   }
@@ -31,7 +28,7 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
-      <BirthyearForm authors={authors}/>
+      <BirthyearForm authors={authors} token={token}/>
     </div>
   )
 }
