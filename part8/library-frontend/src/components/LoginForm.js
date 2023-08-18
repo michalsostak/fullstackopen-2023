@@ -3,19 +3,19 @@ import { useMutation } from '@apollo/client'
 import { LOGIN } from '../queries'
 import { useNavigate } from 'react-router-dom'
 
-const LoginForm = ({ setToken, setError }) => {
+const LoginForm = ({ setToken, notify }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
-  const [ login, result ] = useMutation(LOGIN, {
+  const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
-      setError(error.graphQLErrors[0].message)
+      notify(error.graphQLErrors[0].message)
     }
   })
 
   useEffect(() => {
-    if ( result.data ) {
+    if (result.data) {
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('libraryapp-user-token', token)
