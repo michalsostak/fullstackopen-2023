@@ -21,6 +21,7 @@ export const updateCache = (cache, query, addedBook) => {
   }
   try {
     cache.updateQuery(query, (data) => {
+      // if query is not cached yet, do nothing
       if (!data) {
         return
       }
@@ -51,8 +52,11 @@ const App = () => {
       const addedBook = data.data.bookAdded
       notify(`${addedBook.title} added`)
       updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
-      // updating each individual sub-cache because each query ,eg. ALL_BOOKS{ genre: 'drama' } has its own cache with results
-      addedBook.genres.map((genre) => updateCache(client.cache, { query: ALL_BOOKS, variables: { genre: genre } }, addedBook))
+      
+      // updating each individual sub-cache because each query ,eg. ALL_BOOKS{ genre: 'drama' }
+      //  has its own cache with results
+      addedBook.genres.map((genre) => 
+      updateCache(client.cache, { query: ALL_BOOKS, variables: { genre: genre } }, addedBook))
     },
   })
 
