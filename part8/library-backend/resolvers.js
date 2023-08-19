@@ -12,7 +12,7 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args, context) => {
-      let result = Book.find({})
+      let result
       if (args.author) {
         result = await Author.findOne({ name: args.author })
       }
@@ -25,19 +25,10 @@ const resolvers = {
       return result
     },
     allAuthors: async () => {
-      // console.log('Author.find')
       return Author.find({})
     },
     me: (root, args, context) => {
       return context.currentUser
-    }
-  },
-  Author: {
-    bookCount: async (root) => {
-      // console.log('bookCount.findOne')
-      const author = await Author.findOne({ name: root.name })
-      const booksByAuthor = await Book.find({ author: author })
-      return booksByAuthor.length
     }
   },
   Book: {
@@ -77,7 +68,7 @@ const resolvers = {
       const existingAuthor = await Author.findOne({ name: args.author })
       if (!existingAuthor) {
         try {
-          const author = new Author({ name: args.author, bookCount: 0 })
+          const author = new Author({ name: args.author, bookCount: 0, born: null })
           await author.save()
         } catch (error) {
           throw new GraphQLError('Saving author failed in add book', {
@@ -89,9 +80,11 @@ const resolvers = {
           })
         }
       }
-      const authorObject = await Author.findOne({ name: args.author })
+      const authorObject = await Author.findOneAndUpdate(
+        { name: args.author },
+        { $inc: { bookCount: 1 }},
+        {new: true} )
       const book = new Book({ ...args, author: authorObject })
-
       try {
         await book.save()
       } catch (error) {
