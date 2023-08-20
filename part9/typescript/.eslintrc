@@ -23,6 +23,6 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "c:/users/michal/school/fullstackopen-2023/part9/typescript/tsconfig.json"
   }
 }
