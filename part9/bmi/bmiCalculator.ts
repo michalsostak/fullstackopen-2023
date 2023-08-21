@@ -33,7 +33,7 @@ export const calculateBmi = (heightInCm: number, weightInKg: number): string => 
     case bmi >= 30:
       return "Obese";
     default:
-      return "Invalid bmi calculation"
+      return "Invalid bmi calculation";
   }
 };
 

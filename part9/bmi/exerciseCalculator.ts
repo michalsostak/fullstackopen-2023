@@ -17,8 +17,8 @@ const parseExerciseArguments = (args: string[]): exerciseValues => {
     throw new Error("Not enough arguments");
   }
 
-  const [_firstArg, _secondArg, ...inputArgs] = args;
-  console.log(args)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ _firstArg, _secondArg, ...inputArgs ] = args;
   const allNumbers = inputArgs
     .map((arg: string) => isNaN(Number(arg)))
     .every(arg => !arg);
@@ -69,7 +69,7 @@ const getRating = (target: number, average: number): number => {
     case difference <= -0.5:
       return 3;
     default:
-      return 0
+      return 0;
   }
 };
 
