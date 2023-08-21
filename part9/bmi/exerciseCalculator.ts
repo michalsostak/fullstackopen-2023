@@ -1,6 +1,6 @@
 interface exerciseValues {
   target: number;
-  actual: number[];
+  daily_exercises: number[];
 }
 interface Result {
   periodLength: number;
@@ -18,10 +18,10 @@ const parseExerciseArguments = (args: string[]): exerciseValues => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [ _firstArg, _secondArg, ...inputArgs ] = args;
+  const [_firstArg, _secondArg, ...inputArgs] = args;
   const allNumbers = inputArgs
     .map((arg: string) => isNaN(Number(arg)))
-    .every(arg => !arg);
+    .every((arg) => !arg);
 
   if (!allNumbers) {
     throw new Error("Provided values were not numbers!");
@@ -29,20 +29,20 @@ const parseExerciseArguments = (args: string[]): exerciseValues => {
 
   const inputNumbers = inputArgs.map((arg) => Number(arg));
 
-  const [target, ...actual] = inputNumbers;
+  const [target, ...daily_exercises] = inputNumbers;
   return {
     target,
-    actual,
+    daily_exercises: daily_exercises,
   };
 };
 
 export const calculateExercises = (
   target: number,
-  actual: number[]
+  daily_exercises: number[]
 ): Result => {
-  const periodLength: number = actual.length;
-  const trainingDays: number = actual.filter((day) => day > 0).length;
-  const sum: number = actual.reduce((a, c) => a + c, 0);
+  const periodLength: number = daily_exercises.length;
+  const trainingDays: number = daily_exercises.filter((day) => day > 0).length;
+  const sum: number = daily_exercises.reduce((a, c) => a + c, 0);
   const average: number = sum / periodLength;
   const success: boolean = average >= target;
   const rating: number = getRating(target, average);
@@ -87,8 +87,8 @@ const getRatingDescription = (rating: number): string => {
 };
 
 try {
-  const { target, actual } = parseExerciseArguments(process.argv);
-  console.log(calculateExercises(target, actual));
+  const { target, daily_exercises } = parseExerciseArguments(process.argv);
+  console.log(calculateExercises(target, daily_exercises));
 } catch (error: unknown) {
   let errorMessage = "Something bad happened.";
   if (error instanceof Error) {
