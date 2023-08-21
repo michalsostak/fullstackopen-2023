@@ -20,7 +20,7 @@ const parseBmiArguments = (args: string[]): BmiValues => {
   throw new Error("Provided values were not numbers!");
 };
 
-const calculateBmi = (heightInCm: number, weightInKg: number): string => {
+export const calculateBmi = (heightInCm: number, weightInKg: number): string => {
   const heightInMetres: number = heightInCm / 100;
   const bmi: number = weightInKg / (heightInMetres * heightInMetres);
   switch (true) {
@@ -32,6 +32,8 @@ const calculateBmi = (heightInCm: number, weightInKg: number): string => {
       return "Overweight";
     case bmi >= 30:
       return "Obese";
+    default:
+      return "Invalid bmi calculation"
   }
 };
 

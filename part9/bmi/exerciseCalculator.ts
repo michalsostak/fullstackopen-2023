@@ -17,7 +17,7 @@ const parseExerciseArguments = (args: string[]): exerciseValues => {
     throw new Error("Not enough arguments");
   }
 
-  const [firstArg, secondArg, ...inputArgs] = args;
+  const [_firstArg, _secondArg, ...inputArgs] = args;
   console.log(args)
   const allNumbers = inputArgs
     .map((arg: string) => isNaN(Number(arg)))
@@ -68,6 +68,8 @@ const getRating = (target: number, average: number): number => {
       return 2;
     case difference <= -0.5:
       return 3;
+    default:
+      return 0
   }
 };
 
