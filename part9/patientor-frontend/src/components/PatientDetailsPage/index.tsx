@@ -1,19 +1,30 @@
-import { Box, Table, Typography, TableCell, TableRow, TableBody } from '@mui/material';
-import { Gender, Patient } from '../../types';
-import FemaleIcon from '@mui/icons-material/Female';
-import MaleIcon from '@mui/icons-material/Male';
-import TransgenderIcon from '@mui/icons-material/Transgender';
+import {
+  Box,
+  Table,
+  Typography,
+  TableCell,
+  TableRow,
+  TableBody,
+} from "@mui/material";
+import { Diagnosis, Gender, Patient } from "../../types";
+import FemaleIcon from "@mui/icons-material/Female";
+import MaleIcon from "@mui/icons-material/Male";
+import TransgenderIcon from "@mui/icons-material/Transgender";
 import patientService from "../../services/patients";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import EntryDetails from "./EntryDetails";
 
 interface PatientDetailsPageProps {
-  patientId? : string | null
+  patientId?: string | null;
+  diagnoses: Diagnosis[];
 }
 
-const PatientDetailsPage = ({ patientId } : PatientDetailsPageProps ) => {
+const PatientDetailsPage = ({
+  patientId,
+  diagnoses,
+}: PatientDetailsPageProps) => {
+  const [patient, setPatient] = useState<Patient | null>(null);
 
-  const [patient, setPatient ] = useState<Patient | null>(null)
-  
   useEffect(() => {
     if (!patientId || patientId === null) {
       return;
@@ -21,35 +32,49 @@ const PatientDetailsPage = ({ patientId } : PatientDetailsPageProps ) => {
 
     const fetchPatientById = async (id: string) => {
       const patientById = await patientService.getPatient(id);
-      setPatient(patientById)
+      setPatient(patientById);
     };
     void fetchPatientById(patientId);
   }, [patientId]);
 
-
   if (!patient) {
-    return <div>...loading details</div>
+    return <div>...loading details</div>;
   }
 
   return (
     <div className="App">
-      <Box mt={5}>
+      <Box mt={5} mb={5}>
         <Typography align="left" variant="h4">
-          {patient.name} { patient.gender === Gender.Male ? <MaleIcon /> : ( patient.gender === Gender.Other ? <TransgenderIcon />: <FemaleIcon />)}
+          {patient.name}{" "}
+          {patient.gender === Gender.Male ? (
+            <MaleIcon />
+          ) : patient.gender === Gender.Other ? (
+            <TransgenderIcon />
+          ) : (
+            <FemaleIcon />
+          )}
         </Typography>
       </Box>
       <Table style={{ marginBottom: "1em" }}>
         <TableBody>
-            <TableRow>
-              <TableCell>ssn</TableCell>
-              <TableCell>{patient.ssn}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>occupation</TableCell>
-              <TableCell>{patient.occupation}</TableCell>
-            </TableRow>
+          <TableRow>
+            <TableCell>ssn</TableCell>
+            <TableCell>{patient.ssn}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>occupation</TableCell>
+            <TableCell>{patient.occupation}</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
+      <Box mt={5} mb={5}>
+        <Typography align="left" variant="h5">
+          entries
+        </Typography>
+      </Box>
+      {patient.entries.map((entry) => (
+        <EntryDetails key={entry.id} diagnoses={diagnoses} entry={entry} />
+      ))}
     </div>
   );
 };
