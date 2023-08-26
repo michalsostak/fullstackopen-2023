@@ -1,5 +1,5 @@
 import patients from "../../data/patients";
-import { Gender, NewPatient, Patient, PatientNoSsn } from "../types";
+import { NewPatient, Patient, PatientNoSsn } from "../types";
 import { v1 as uuid } from "uuid";
 
 const getPatientById = (id: string): Patient => {
@@ -8,7 +8,7 @@ const getPatientById = (id: string): Patient => {
     id: filteredPatient.id,
     name: filteredPatient.name,
     dateOfBirth: filteredPatient.dateOfBirth,
-    gender: filteredPatient.gender as Gender,
+    gender: filteredPatient.gender,
     ssn: filteredPatient.ssn,
     occupation: filteredPatient.occupation,
     entries: filteredPatient.entries
@@ -20,7 +20,7 @@ const getPatients = (): Patient[] => {
     id,
     name,
     dateOfBirth,
-    gender: gender as Gender,
+    gender: gender,
     ssn,
     occupation,
     entries
@@ -32,7 +32,7 @@ const getPatientsWithoutSsn = (): PatientNoSsn[] => {
     id,
     name,
     dateOfBirth,
-    gender: gender as Gender,
+    gender,
     occupation,
     entries
   }));
@@ -40,13 +40,9 @@ const getPatientsWithoutSsn = (): PatientNoSsn[] => {
 
 const addPatient = (entry: NewPatient): Patient => {
   const id = uuid();
-  const entriesAsString : never[] = [];
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { entries, ...entryRemainder } = entry;
   const newPatient = {
-    id: id,
-    entries: entriesAsString,
-    ...entryRemainder,
+    id,
+    ...entry,
   };
 
   patients.push(newPatient);
