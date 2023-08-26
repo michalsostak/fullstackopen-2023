@@ -1,17 +1,20 @@
 import patients from "../../data/patients";
-import { NewPatient, Patient, PatientNoSsn } from "../types";
+import { Entry, EntryWithoutId, NewPatient, Patient, PatientNoSsn } from "../types";
 import { v1 as uuid } from "uuid";
 
-const getPatientById = (id: string): Patient => {
-  const filteredPatient = patients.filter((p) => p.id == id)[0];
+const getPatientById = (id: string): Patient | undefined => {
+  const patient = patients.find((p) => p.id == id);
+  if (!patient) {
+    return undefined;
+  }
   return {
-    id: filteredPatient.id,
-    name: filteredPatient.name,
-    dateOfBirth: filteredPatient.dateOfBirth,
-    gender: filteredPatient.gender,
-    ssn: filteredPatient.ssn,
-    occupation: filteredPatient.occupation,
-    entries: filteredPatient.entries
+    id: patient.id,
+    name: patient.name,
+    dateOfBirth: patient.dateOfBirth,
+    gender: patient.gender,
+    ssn: patient.ssn,
+    occupation: patient.occupation,
+    entries: patient.entries
   };
 };
 
@@ -49,9 +52,26 @@ const addPatient = (entry: NewPatient): Patient => {
   return newPatient;
 };
 
+const addEntry = (entry: EntryWithoutId, patientId: string): Entry => {
+  const id = uuid();
+  const newEntry = {
+    id,
+    ...entry,
+  };
+  const patient = patients.find(p => p.id === patientId);
+
+  if (!patient) {
+    return newEntry;
+  }
+
+  patient.entries.push(newEntry);
+  return newEntry;
+};
+
 export default {
   getPatients,
   getPatientsWithoutSsn,
   getPatientById,
   addPatient,
+  addEntry
 };
