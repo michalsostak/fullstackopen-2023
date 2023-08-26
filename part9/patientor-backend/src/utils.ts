@@ -225,6 +225,10 @@ const parseHealthCheckRating = (object: unknown): HealthCheckRating  => {
   if (!object || typeof object !== "object" || !("healthCheckRating" in object)) {
     throw new Error("Incorrect or missing data");
   }
+  const check = Object.values(HealthCheckRating).includes(Number(object.healthCheckRating));
+  if (!check) {
+    throw new Error("Incorrect health check rating");
+  } 
 
   return object.healthCheckRating as HealthCheckRating;
 };
