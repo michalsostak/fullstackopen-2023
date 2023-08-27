@@ -30,7 +30,7 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
 
 const parseHospitalEntry = (object: unknown): EntryWithoutId => {
   if (!object || typeof object !== "object") {
-    throw new Error("Incorrect or missing data");
+    throw new Error("Incorrect or missing hospital entry data");
   }
 
   if (
@@ -44,8 +44,8 @@ const parseHospitalEntry = (object: unknown): EntryWithoutId => {
       date: parseDate(object.date),
       specialist: parseString(object.specialist),
       diagnosisCodes:
-        "diagnosesCodes" in object
-          ? parseDiagnosisCodes(object.diagnosesCodes)
+        "diagnosisCodes" in object
+          ? parseDiagnosisCodes(object)
           : undefined,
       type: "Hospital" as const,
       discharge: parseDischarge(object.discharge),
@@ -72,8 +72,8 @@ const parseOccupationalHealthcareEntry = (object: unknown): EntryWithoutId => {
       date: parseDate(object.date),
       specialist: parseString(object.specialist),
       diagnosisCodes:
-        "diagnosesCodes" in object
-          ? parseDiagnosisCodes(object.diagnosesCodes)
+        "diagnosisCodes" in object
+          ? parseDiagnosisCodes(object)
           : undefined,
       type: "OccupationalHealthcare" as const,
       employerName: parseString(object.employerName),
@@ -100,8 +100,8 @@ const parseHealthCheckEntry = (object: unknown): EntryWithoutId => {
       date: parseDate(object.date),
       specialist: parseString(object.specialist),
       diagnosisCodes:
-        "diagnosesCodes" in object
-          ? parseDiagnosisCodes(object.diagnosesCodes)
+        "diagnosisCodes" in object
+          ? parseDiagnosisCodes(object)
           : undefined,
       type: "HealthCheck" as const,
       healthCheckRating: parseHealthCheckRating(object.healthCheckRating)
@@ -140,13 +140,17 @@ export const toNewPatient = (object: unknown): NewPatient => {
   throw new Error("Incorrect data: some fields are missing");
 };
 
+const isNumber = (num: unknown): num is number => {
+  return !isNaN(Number(num));
+};
+
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
 };
 
 const parseString = (entry: unknown): string => {
   if (!entry || !isString(entry)) {
-    throw new Error("Incorrect or missing comment");
+    throw new Error("Problem parsing string or a missing comment");
   }
 
   return entry;
@@ -192,7 +196,7 @@ const parseDischarge = (object: unknown): Discharge => {
     !("criteria" in object) ||
     !("date" in object)
   ) {
-    throw new Error("Incorrect or missing data");
+    throw new Error("Incorrect or missing discharge data");
   }
 
   const discharge: Discharge = {
@@ -222,13 +226,16 @@ const parseSickLeave = (object: unknown): Sickleave | undefined => {
 };
 
 const parseHealthCheckRating = (object: unknown): HealthCheckRating  => {
-  if (!object || typeof object !== "object" || !("healthCheckRating" in object)) {
-    throw new Error("Incorrect or missing data");
+  if (!object || !isNumber(object)) {
+    throw new Error("Incorrect number format for health check rating or missing health check");
   }
-  const check = Object.values(HealthCheckRating).includes(Number(object.healthCheckRating));
+  const healthcheckAsNumber = Number(object);
+  const check = Object.values(HealthCheckRating).includes(healthcheckAsNumber);
   if (!check) {
-    throw new Error("Incorrect health check rating");
-  } 
+    throw new Error("Incorrect health check rating, must be between 0 and 3");
+  }
 
-  return object.healthCheckRating as HealthCheckRating;
+  const healthCheck = healthcheckAsNumber as unknown as HealthCheckRating;
+
+  return healthCheck;
 };

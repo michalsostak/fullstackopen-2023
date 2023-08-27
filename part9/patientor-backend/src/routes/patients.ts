@@ -15,10 +15,10 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
   try {
-    const newPatientEntry = toNewPatient(req.body);
+    const newPatient = toNewPatient(req.body);
 
-    const addedEntry = patientService.addPatient(newPatientEntry);
-    res.json(addedEntry);
+    const addedPatient = patientService.addPatient(newPatient);
+    res.json(addedPatient);
   } catch (error: unknown) {
     let errorMessage = 'Something went wrong.';
     if (error instanceof Error) {
