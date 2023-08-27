@@ -69,11 +69,11 @@ const PatientDetailsPage = ({
       <Table style={{ marginBottom: "1em" }}>
         <TableBody>
           <TableRow>
-            <TableCell>ssn</TableCell>
+            <TableCell>SSN</TableCell>
             <TableCell>{patient.ssn}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>occupation</TableCell>
+            <TableCell>Occupation</TableCell>
             <TableCell>{patient.occupation}</TableCell>
           </TableRow>
         </TableBody>
@@ -92,11 +92,12 @@ const PatientDetailsPage = ({
           setPatient={setPatient}
           setError={setError}
           patient={patient}
+          diagnoses={diagnoses}
         />
       )}
       <Box mt={5} mb={5}>
         <Typography align="left" variant="h5">
-          entries
+          Entries
         </Typography>
       </Box>
       {patient.entries.map((entry) => (

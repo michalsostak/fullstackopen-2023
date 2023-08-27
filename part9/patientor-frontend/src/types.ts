@@ -13,6 +13,16 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3
 }
 
+export interface Discharge {
+  date: string;
+  criteria: string;
+}
+
+export interface Sickleave {
+  startDate: string;
+  endDate: string;
+}
+
 export interface HealthCheckEntry extends BaseEntry {
   type: "HealthCheck";
   healthCheckRating: HealthCheckRating;
