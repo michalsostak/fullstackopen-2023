@@ -122,8 +122,7 @@ export const toNewPatient = (object: unknown): NewPatient => {
     "dateOfBirth" in object &&
     "ssn" in object &&
     "gender" in object &&
-    "occupation" in object &&
-    "entries" in object
+    "occupation" in object
   ) {
     const newEntry: NewPatient = {
       name: parseString(object.name),
