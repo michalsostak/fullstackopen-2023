@@ -1,6 +1,7 @@
 import { Box, List, ListItem } from "@mui/material";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Diagnosis, HospitalEntry } from "../../types";
+import { getCodeDescription } from "../../utils";
 
 interface HospitalEntryDetailsProps {
   entry: HospitalEntry;
@@ -9,12 +10,8 @@ interface HospitalEntryDetailsProps {
 
 const HospitalEntryDetails = ({ entry, diagnoses }: HospitalEntryDetailsProps) => {
 
-  const getCodeDescription = (code: string): string => {
-    return diagnoses.filter((d) => d.code === code)[0].name;
-  };
-
   return (
-    <Box sx={{ borderRadius: '8px', border: 2, padding: 2, margin: 2 }}>
+    <Box sx={{ borderRadius: '1em', border: 2, padding: 2, margin: 2 }}>
       <div>{entry.date} <CheckBoxIcon/></div>
       <div>
         <i>{entry.description}</i>
@@ -30,7 +27,7 @@ const HospitalEntryDetails = ({ entry, diagnoses }: HospitalEntryDetailsProps) =
       >
         {entry.diagnosisCodes?.map((code) => (
           <ListItem key={code} sx={{ display: "list-item" }}>
-            {code} {getCodeDescription(code)}
+            {code} {getCodeDescription(code, diagnoses)}
           </ListItem>
         ))}
       </List>

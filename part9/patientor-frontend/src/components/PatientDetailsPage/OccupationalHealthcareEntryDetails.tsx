@@ -1,6 +1,7 @@
 import { Box, List, ListItem } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
 import { Diagnosis, OccupationalHealthcareEntry } from "../../types";
+import { getCodeDescription } from "../../utils";
 
 interface OccupationalHealthcareEntryDetailsProps {
   entry: OccupationalHealthcareEntry;
@@ -11,12 +12,10 @@ const OccupationalHealthcareEntryDetails = ({
   entry,
   diagnoses,
 }: OccupationalHealthcareEntryDetailsProps) => {
-  const getCodeDescription = (code: string): string => {
-    return diagnoses.filter((d) => d.code === code)[0].name;
-  };
+
 
   return (
-    <Box sx={{ borderRadius: "8px", border: 2, padding: 2, margin: 2 }}>
+    <Box sx={{ borderRadius: "1em", border: 2, padding: 2, margin: 2 }}>
       <div>
         {entry.date} <WorkIcon /> {entry.employerName}
       </div>
@@ -38,7 +37,7 @@ const OccupationalHealthcareEntryDetails = ({
       >
         {entry.diagnosisCodes?.map((code) => (
           <ListItem key={code} sx={{ display: "list-item" }}>
-            {code} {getCodeDescription(code)}
+            {code} {getCodeDescription(code, diagnoses)}
           </ListItem>
         ))}
       </List>
